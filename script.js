@@ -139,8 +139,8 @@ var Covid19 = /** @class */ (function () {
                     return null;
                 }
                 for (var d = 0; d < i.deaths.length; d++) {
-                    var deaths = i.deaths[d];
-                    var confirmed = i.confirmed[d];
+                    var deaths = i.deaths[d] - runningDeaths;
+                    var confirmed = i.confirmed[d] - runningConfirmed;
                     runningDeaths += deaths;
                     runningConfirmed += confirmed;
                     if (population != null) {
