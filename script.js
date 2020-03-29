@@ -41,15 +41,9 @@ var Covid19 = /** @class */ (function () {
     }
     Covid19.prototype.handlePopulation = function () {
         var _this = this;
-        var buckets = 12;
-        var populationScale = new LogarithmicSlider(buckets, this.max.population);
         var population = $("#population");
-        population.empty();
-        for (var i = 0; i < buckets - 2; i++) {
-            population.append("<option value=" + i + ">" + (i == 0 ? "All Population Sizes" : ">= " + populationScale.getValue(i)) + "</option>");
-        }
         population.on("change", function () {
-            _this.populationThreshold = populationScale.getValue(population.val());
+            _this.populationThreshold = population.val();
             _this.styleMap();
         });
     };
@@ -233,7 +227,7 @@ var Covid19 = /** @class */ (function () {
         var geoId = this.getGeoId(evt.feature);
         var countyData = this.covid19[this.currentDayIndex][geoId];
         var county = this.allCounties[geoId];
-        var html = "\n<b>" + county.county + ", " + county.stateAbbr + " (" + county.population + ")</b>\n<p>Day " + this.currentDayIndex + "</p>\n<p></p>\n<p>New Confirmed: " + countyData.newConfirmed + " (" + countyData.newConfirmedNormalized + ")</p>\n<p>Total Confirmed: " + countyData.totalConfirmed + " (" + countyData.totalConfirmedNormalized + ")</p>\n<p></p>\n<p>New Deaths: " + countyData.newDeaths + " (" + countyData.newDeathsNormalized + ")</p>\n<p>Total Deaths: " + countyData.totalDeaths + " (" + countyData.totalDeathsNormalized + ")</p>\n";
+        var html = "\n<div><b>" + county.county + ", " + county.stateAbbr + "</b></div>\n<div>Population: " + county.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "\n</div><p>Day " + this.currentDayIndex + "</p>\n<p></p>\n<p>New Confirmed: " + countyData.newConfirmed + "<br>" + countyData.newConfirmedNormalized + " per million\n<p>Total Confirmed: " + countyData.totalConfirmed + "<br>" + countyData.totalConfirmedNormalized + " per million</p>\n<p></p>\n<p>New Deaths: " + countyData.newDeaths + "<br>" + countyData.newDeathsNormalized + " per million</p>\n<p>Total Deaths: " + countyData.totalDeaths + "<br>" + countyData.totalDeathsNormalized + " per million</p>\n";
         this.infoWindow.setContent(html);
         this.infoWindow.setPosition(evt.latLng);
         this.infoWindow.setOptions({ pixelOffset: new google.maps.Size(0, -34) });
@@ -271,7 +265,7 @@ var Covid19 = /** @class */ (function () {
             var newValue = this.logSlider.getValue(i);
             var shade = this.shades[i];
             var text = i === 0 || i === this.shades.length - 1 ? newValue : (newValue == 0 ? 0 : maxValue + 1) + " - " + newValue;
-            html += "<div class='col-6 col-sm-3 my-2'>";
+            html += "<div class='col-6 col-sm-3'>";
             html += "<div data-position=\"" + i + "\" class=\"legend-value " + (shade.on ? "on" : "") + "\" style='background-color: #" + shade.color + "'><div>" + text + "</div></div>";
             html += "</div>";
             maxValue = newValue;
@@ -297,7 +291,7 @@ var Covid19 = /** @class */ (function () {
         return {
             fillColor: bucket,
             strokeWeight: 0,
-            fillOpacity: 0.8
+            fillOpacity: 0.75
         };
     };
     return Covid19;

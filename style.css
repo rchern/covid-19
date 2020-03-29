@@ -71,3 +71,11 @@
   #legend .legend-value div {
     background-color: white;
   }
+
+  #footer {
+      background-color: #008080;
+      color: white;
+  }
+  #footer a, #footer a:hover, #footer a:visited {
+      color: white;
+  }
