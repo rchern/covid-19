@@ -290,7 +290,8 @@ var Covid19 = /** @class */ (function () {
         }
         return {
             fillColor: bucket,
-            strokeWeight: 0,
+            strokeWeight: 1,
+            strokeColor: "#ccc",
             fillOpacity: 0.75
         };
     };
