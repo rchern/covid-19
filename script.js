@@ -8,13 +8,13 @@ var Covid19 = /** @class */ (function () {
         this.populationThreshold = 0;
         this.geoIdPattern = /.+US(\d+)/;
         this.shades = [
-            { color: "E8DEFF", on: true },
-            { color: "D8C7FF", on: true },
-            { color: "B99AFF", on: true },
-            { color: "9B6DFF", on: true },
-            { color: "7C40FF", on: true },
-            { color: "6D2AFF", on: true },
-            { color: "651FFF", on: true },
+            { color: "F2F0F7", on: true },
+            { color: "DADAEB", on: true },
+            { color: "BCBDDC", on: true },
+            { color: "9E9AC8", on: true },
+            { color: "807DBA", on: true },
+            { color: "6A51A3", on: true },
+            { color: "4A1486", on: true },
             { color: "333333", on: true }
         ];
         this.startDate = new Date(2020, 0, 22);
