@@ -76,7 +76,7 @@ class Covid19 {
     });
   }
 
-  fetchData(): any {
+  fetchData(): JQuery.Thenable<USAFactsCounty[]> {
     return $.when(this.fetchPopulationData()).then(() =>
       this.fetchCovid19Data()
     );
@@ -284,8 +284,15 @@ class Covid19 {
   }
 }
 
-(window as any).initMap = function initMap(): void {
+declare global {
+  interface Window {
+    initMap: () => void;
+    covid19: Covid19;
+  }
+}
+
+window.initMap = function initMap(): void {
   const covid19 = new Covid19("map");
-  (window as any).covid19 = covid19;
+  window.covid19 = covid19;
   covid19.initialize();
 };

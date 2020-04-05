@@ -28,7 +28,7 @@ export default class Map {
     private max: Metrics<number>,
     private legends: Metrics<Legend>
   ) {
-    this.currentDayIndex = 0; // data.days.length - 1;
+    this.currentDayIndex = data.days.length - 1;
 
     this.map = new google.maps.Map(
       document.getElementById(this.mapId) as Element,
@@ -40,7 +40,8 @@ export default class Map {
     this.map.data.loadGeoJson("./data/gz_2010_us_050_00_20m.json");
     this.infoWindow = new google.maps.InfoWindow();
 
-    this.map.data.addListener("click", (evt) => {
+    this.map.data.addListener("click", (evt: google.maps.Data.MouseEvent) => {
+      console.log(evt);
       this.showCountyDetails(evt);
     });
 
@@ -56,7 +57,7 @@ export default class Map {
     const minPopulation = $("#minPopulation");
     minPopulation.on("change", () => {
       const val = minPopulation.val();
-      this.minPopulation = val === "" ? undefined : ((val as number) * 1000);
+      this.minPopulation = val === "" ? undefined : (val as number) * 1000;
 
       this.styleMap();
     });
@@ -64,7 +65,7 @@ export default class Map {
     const maxPopulation = $("#maxPopulation");
     maxPopulation.on("change", () => {
       const val = maxPopulation.val();
-      this.maxPopulation = val === "" ? undefined : ((val as number) * 1000);
+      this.maxPopulation = val === "" ? undefined : (val as number) * 1000;
 
       this.styleMap();
     });
@@ -134,7 +135,7 @@ export default class Map {
     });
   }
 
-  showCountyDetails(evt: any): void {
+  showCountyDetails(evt: google.maps.Data.MouseEvent): void {
     const geoId = this.getGeoId(evt.feature);
 
     const countyData = this.data.days[this.currentDayIndex][geoId];
@@ -171,7 +172,7 @@ export default class Map {
     Total Deaths: ${countyData.totalDeaths}
     <br />
     ${countyData.totalDeathsPerCapita} per million
-    <br> />
+    <br />
     ${countyData.totalDeathsGrowthToday}% growth from yesterday
     <br />
     ${countyData.totalDeathsGrowthRate}% growth change from yesterday
