@@ -9,7 +9,7 @@ const config = merge(common, {
   devtool: "source-map",
   output: {
     filename: "scripts/[name].[chunkhash].js",
-    publicPath: "/covid19/"
+    publicPath: "/covid-19/"
   },
   plugins: [
     new MiniCssExtractPlugin({

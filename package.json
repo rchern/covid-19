@@ -5,9 +5,6 @@
   "scripts": {
     "start": "webpack-dev-server --env dev",
     "build": "webpack --env prod",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist -m GITHUB_SHA",
-    "gh-pages": "gh-pages",
     "lint": "npm run lint:scripts && npm run lint:styles",
     "lint:scripts": "eslint --fix . --ext .ts src",
     "lint:styles": "stylelint \"./src/**/*.scss\" --fix"
