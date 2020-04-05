@@ -1,0 +1,4 @@
+.container-fluid{max-width:1200px}#map{overflow:hidden;padding-bottom:56.25%;position:relative;height:0}#map iframe{left:0;top:0;height:100%;width:100%;position:absolute}.control{background-image:url(/covid19/images/controls.png);background-repeat:no-repeat;display:inline-block;width:26px;height:14px;cursor:pointer}.control.disabled{opacity:0.25}.play{background-position:-44px 0}.pause{background-position:-20px 0}.stop{background-position:4px 0}.rewind-1{background-position:0 -25px}.fast-forward-1{background-position:-38px -25px}.rewind-all{background-position:4px -50px}.fast-forward-all{background-position:-43px -50px}#legend{font-size:0.85rem}#legend .legend-value{text-align:center;padding:25px;cursor:pointer}#legend .legend-value.on{font-weight:bold}#legend .legend-value div{background-color:white}#footer{background-color:#008080;color:white}#footer a,#footer a:hover,#footer a:visited{color:white}
+
+
+/*# sourceMappingURL=app.7392976804bb72c692c1.css.map*/
