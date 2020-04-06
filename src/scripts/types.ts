@@ -42,7 +42,7 @@ export interface DailyData {
 }
 
 export interface DailyDatum {
-  [key: string]: Metrics<number>
+  [key: string]: Metrics<number>;
 }
 export interface Population {
   [key: string]: number;

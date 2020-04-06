@@ -41,7 +41,6 @@ export default class Map {
     this.infoWindow = new google.maps.InfoWindow();
 
     this.map.data.addListener("click", (evt: google.maps.Data.MouseEvent) => {
-      console.log(evt);
       this.showCountyDetails(evt);
     });
 
@@ -132,9 +131,13 @@ export default class Map {
     if (national == null) {
       $("#nationValue").text("");
       $("#national").hide();
-    }
-    else {
-      $("#nationalValue").text((isGrowth? national : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + (this.metric.indexOf("Growth") >= 0 ? "%" : ""));
+    } else {
+      $("#nationalValue").text(
+        (isGrowth
+          ? national
+          : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) +
+          (this.metric.indexOf("Growth") >= 0 ? "%" : "")
+      );
       $("#national").show();
     }
   }

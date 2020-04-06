@@ -190,11 +190,14 @@ class Covid19 {
             newConfirmed: newConfirmedToday,
             newDeaths: newDeathsToday,
 
-            totalConfirmedGrowthToday: Math.floor(confirmedGrowthToday * 100) / 100,
+            totalConfirmedGrowthToday:
+              Math.floor(confirmedGrowthToday * 100) / 100,
             totalDeathsGrowthToday: Math.floor(deathsGrowthToday * 100) / 100,
 
-            totalConfirmedGrowthRate: Math.floor(confirmedGrowthComparison * 100) / 100,
-            totalDeathsGrowthRate: Math.floor(deathsGrowthComparison * 100) / 100,
+            totalConfirmedGrowthRate:
+              Math.floor(confirmedGrowthComparison * 100) / 100,
+            totalDeathsGrowthRate:
+              Math.floor(deathsGrowthComparison * 100) / 100,
           };
 
           this.checkMax(countyData, "totalConfirmed");
@@ -226,7 +229,10 @@ class Covid19 {
           }
 
           if (this.covid19!.days[d] == null) {
-            this.covid19!.days[d] = { national: {} as Metrics<number>, data: {} as DailyDatum } as DailyData;
+            this.covid19!.days[d] = {
+              national: {} as Metrics<number>,
+              data: {} as DailyDatum,
+            } as DailyData;
           }
           this.covid19!.days[d].data[i.countyFIPS] = countyData;
         }
@@ -236,16 +242,25 @@ class Covid19 {
         d.national = Object.keys(d.data).reduce((res, cKey) => {
           const countyData = d.data[cKey];
 
-          res.totalConfirmed = (res.totalConfirmed || 0) + countyData.totalConfirmed;
+          res.totalConfirmed =
+            (res.totalConfirmed || 0) + countyData.totalConfirmed;
           res.totalDeaths = (res.totalDeaths || 0) + countyData.totalDeaths;
           res.newConfirmed = (res.newConfirmed || 0) + countyData.newConfirmed;
           res.newDeaths = (res.newDeaths || 0) + countyData.newDeaths;
 
           const yesterdayConfirmed = res.totalConfirmed - res.newConfirmed;
-          res.totalConfirmedGrowthToday = yesterdayConfirmed === 0 ? 0 : Math.floor(res.newConfirmed / yesterdayConfirmed * 100 * 100) / 100;
+          res.totalConfirmedGrowthToday =
+            yesterdayConfirmed === 0
+              ? 0
+              : Math.floor(
+                  (res.newConfirmed / yesterdayConfirmed) * 100 * 100
+                ) / 100;
 
           const yesterdayDeaths = res.totalDeaths - res.newDeaths;
-          res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : Math.floor(res.newDeaths / yesterdayDeaths * 100 * 100) / 100;
+          res.totalDeathsGrowthToday =
+            yesterdayDeaths === 0
+              ? 0
+              : Math.floor((res.newDeaths / yesterdayDeaths) * 100 * 100) / 100;
 
           return res;
         }, {} as Metrics<number>);
@@ -253,13 +268,31 @@ class Covid19 {
 
       this.covid19!.days.forEach((d, i) => {
         if (i > 0) {
-          const totalConfirmedGrowthYesterday = this.covid19!.days[i - 1].national.totalConfirmedGrowthToday;
-          d.national.totalConfirmedGrowthRate = totalConfirmedGrowthYesterday === 0 ? 0 : Math.floor(d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday * 100 * 100) / 100;
+          const totalConfirmedGrowthYesterday = this.covid19!.days[i - 1]
+            .national.totalConfirmedGrowthToday;
+          d.national.totalConfirmedGrowthRate =
+            totalConfirmedGrowthYesterday === 0
+              ? 0
+              : Math.floor(
+                  (d.national.totalConfirmedGrowthToday /
+                    totalConfirmedGrowthYesterday) *
+                    100 *
+                    100
+                ) / 100;
 
-          const totalDeathsGrowthYesterday = this.covid19!.days[i - 1].national.totalDeathsGrowthToday;
-          d.national.totalDeathsGrowthRate = totalDeathsGrowthYesterday === 0 ? 0 : Math.floor(d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday * 100 * 100) / 100;
+          const totalDeathsGrowthYesterday = this.covid19!.days[i - 1].national
+            .totalDeathsGrowthToday;
+          d.national.totalDeathsGrowthRate =
+            totalDeathsGrowthYesterday === 0
+              ? 0
+              : Math.floor(
+                  (d.national.totalDeathsGrowthToday /
+                    totalDeathsGrowthYesterday) *
+                    100 *
+                    100
+                ) / 100;
         }
-      })
+      });
     });
   }
 
