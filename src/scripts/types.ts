@@ -37,7 +37,12 @@ export interface Counties {
   [key: string]: CountySummary;
 }
 export interface DailyData {
-  [key: string]: Metrics<number>;
+  national: Metrics<number>;
+  data: DailyDatum;
+}
+
+export interface DailyDatum {
+  [key: string]: Metrics<number>
 }
 export interface Population {
   [key: string]: number;

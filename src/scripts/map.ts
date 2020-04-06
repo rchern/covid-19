@@ -125,6 +125,18 @@ export default class Map {
     );
     date.setDate(date.getDate() + this.currentDayIndex);
     $("#currentDate").text(date.toLocaleDateString("en-US"));
+
+    const isGrowth = this.metric.indexOf("Growth") >= 0;
+    const national = this.data.days[this.currentDayIndex].national[this.metric];
+
+    if (national == null) {
+      $("#nationValue").text("");
+      $("#national").hide();
+    }
+    else {
+      $("#nationalValue").text((isGrowth? national : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + (this.metric.indexOf("Growth") >= 0 ? "%" : ""));
+      $("#national").show();
+    }
   }
 
   handleMetric(): void {
@@ -138,7 +150,7 @@ export default class Map {
   showCountyDetails(evt: google.maps.Data.MouseEvent): void {
     const geoId = this.getGeoId(evt.feature);
 
-    const countyData = this.data.days[this.currentDayIndex][geoId];
+    const countyData = this.data.days[this.currentDayIndex].data[geoId];
     const county = this.data.counties[geoId];
 
     const html = `
@@ -213,7 +225,7 @@ export default class Map {
     feature: google.maps.Data.Feature
   ): google.maps.Data.StyleOptions {
     const geoId = this.getGeoId(feature);
-    const countyData = this.data.days[this.currentDayIndex][geoId];
+    const countyData = this.data.days[this.currentDayIndex].data[geoId];
     const county = this.data.counties[geoId];
 
     let bucket = "white";
