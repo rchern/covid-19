@@ -16,18 +16,14 @@ export default class LogarithmicSlider {
     if (value <= 0) {
       return 0;
     }
-    let position = Math.ceil(
-      (Math.log(value) - this.minv) / this.scale + this.minp
-    );
+    let position = Math.ceil((Math.log(value) - this.minv) / this.scale + this.minp);
     if (position === 0 && value > 0) {
       position = 1;
     }
     return position;
   }
   getValue(position: number): number {
-    let value = Math.round(
-      Math.exp(this.minv + this.scale * (position - this.minp))
-    );
+    let value = Math.round(Math.exp(this.minv + this.scale * (position - this.minp)));
     if (position === 0 && value > 0) {
       value = 0;
     }

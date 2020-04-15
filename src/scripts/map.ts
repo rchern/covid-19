@@ -21,22 +21,13 @@ export default class Map {
     { code: "333333", on: true },
   ];
 
-  constructor(
-    private mapId: string,
-    private metric: Metric,
-    private data: Covid19Data,
-    private max: Metrics<number>,
-    private legends: Metrics<Legend>
-  ) {
+  constructor(private mapId: string, private metric: Metric, private data: Covid19Data, private max: Metrics<number>, private legends: Metrics<Legend>) {
     this.currentDayIndex = data.days.length - 1;
 
-    this.map = new google.maps.Map(
-      document.getElementById(this.mapId) as Element,
-      {
-        zoom: 4,
-        center: { lat: 38.95809, lng: -95.26726 },
-      }
-    );
+    this.map = new google.maps.Map(document.getElementById(this.mapId) as Element, {
+      zoom: 4,
+      center: { lat: 38.95809, lng: -95.26726 },
+    });
     this.map.data.loadGeoJson("./data/gz_2010_us_050_00_20m.json");
     this.infoWindow = new google.maps.InfoWindow();
 
@@ -117,11 +108,7 @@ export default class Map {
   }
 
   displayDate(): void {
-    const date = new Date(
-      this.startDate.getFullYear(),
-      this.startDate.getMonth(),
-      this.startDate.getDate()
-    );
+    const date = new Date(this.startDate.getFullYear(), this.startDate.getMonth(), this.startDate.getDate());
     date.setDate(date.getDate() + this.currentDayIndex);
     $("#currentDate").text(date.toLocaleDateString("en-US"));
 
@@ -133,10 +120,7 @@ export default class Map {
       $("#national").hide();
     } else {
       $("#nationalValue").text(
-        (isGrowth
-          ? national
-          : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) +
-          (this.metric.indexOf("Growth") >= 0 ? "%" : "")
+        (isGrowth ? national : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + (this.metric.indexOf("Growth") >= 0 ? "%" : "")
       );
       $("#national").show();
     }
@@ -158,9 +142,7 @@ export default class Map {
 
     const html = `
 <div><b>${county.county}, ${county.stateAbbr}</b></div>
-<div>Population:  ${county.population
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
+<div>Population:  ${county.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
 <p>Day ${this.currentDayIndex}</p>
 <p></p>
 <p>
@@ -224,9 +206,7 @@ export default class Map {
     this.map!.data.setStyle((feature) => this.styleFeature(feature));
   }
 
-  styleFeature(
-    feature: google.maps.Data.Feature
-  ): google.maps.Data.StyleOptions {
+  styleFeature(feature: google.maps.Data.Feature): google.maps.Data.StyleOptions {
     const geoId = this.getGeoId(feature);
     const countyData = this.data.days[this.currentDayIndex].data[geoId];
     const county = this.data.counties[geoId];
@@ -238,10 +218,8 @@ export default class Map {
 
       if (shade.isOn()) {
         if (
-          (this.minPopulation == null ||
-            this.minPopulation <= county.population) &&
-          (this.maxPopulation == null ||
-            this.maxPopulation >= county.population)
+          (this.minPopulation == null || this.minPopulation <= county.population) &&
+          (this.maxPopulation == null || this.maxPopulation >= county.population)
         ) {
           bucket = "#" + shade.getColor();
         }

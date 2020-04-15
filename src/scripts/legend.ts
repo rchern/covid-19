@@ -1,11 +1,5 @@
 export class LegendItem {
-  constructor(
-    private position: number,
-    private color: string,
-    private min: number | null,
-    private max: number | null,
-    private on: boolean
-  ) {}
+  constructor(private position: number, private color: string, private min: number | null, private max: number | null, private on: boolean) {}
 
   toggle(): void {
     this.on = !this.on;
@@ -27,9 +21,7 @@ export class LegendItem {
 
     return `
 <div class='col-6 col-sm-3'>
-  <div data-position="${this.position}" class="legend-value ${
-      this.on ? "on" : ""
-    }" style="background-color: #${this.color}">
+  <div data-position="${this.position}" class="legend-value ${this.on ? "on" : ""}" style="background-color: #${this.color}">
     <div>${text}</div>
   </div>
 </div>
@@ -37,10 +29,7 @@ export class LegendItem {
   }
 
   isInRange(value: number): boolean {
-    return (
-      (this.min === null || value >= this.min) &&
-      (this.max === null || value <= this.max)
-    );
+    return (this.min === null || value >= this.min) && (this.max === null || value <= this.max);
   }
   getColor(): string {
     return this.color;
