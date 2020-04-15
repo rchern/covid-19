@@ -33,6 +33,13 @@ class Covid19 {
 
       totalConfirmedGrowthRate: 0,
       totalDeathsGrowthRate: 0,
+
+      newDeathsAverage: 0,
+      newConfirmedAverage: 0,
+      newDeathsPerCapitaAverage: 0,
+      newConfirmedPerCapitaAverage: 0,
+      totalDeathsGrowthTodayAverage: 0,
+      totalConfirmedGrowthTodayAverage: 0,
     };
   }
 
@@ -164,7 +171,7 @@ class Covid19 {
         }
       });
 
-      this.covid19.days.forEach((d) => {
+      this.covid19.days.forEach((d, i) => {
         d.national = Object.keys(d.data).reduce((res, cKey) => {
           const countyData = d.data[cKey];
 
@@ -178,6 +185,26 @@ class Covid19 {
 
           const yesterdayDeaths = res.totalDeaths - res.newDeaths;
           res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : Math.floor((res.newDeaths / yesterdayDeaths) * 100 * 100) / 100;
+
+          const window = this.getWindow(i).map(d => d.data[cKey]);
+          countyData.newConfirmedAverage = Math.floor(window.reduce((sum, c) => sum + c.newConfirmed, 0) / window.length);
+          countyData.newDeathsAverage = Math.floor(window.reduce((sum, c) => sum + c.newDeaths, 0) / window.length);
+          countyData.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
+          countyData.totalDeathsGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length);
+
+          this.checkMax(countyData, "newConfirmedAverage");
+          this.checkMax(countyData, "newDeathsAverage");
+          this.checkMax(countyData, "totalConfirmedGrowthTodayAverage");
+          this.checkMax(countyData, "totalDeathsGrowthTodayAverage");
+
+          const countySummary = this.covid19!.counties[cKey];
+          if (countySummary.population !== null) {
+            countyData.newConfirmedPerCapitaAverage = Math.floor(window.reduce((sum, c) => sum + c.newConfirmedPerCapita!, 0) / window.length);
+            countyData.newDeathsPerCapitaAverage = Math.floor(window.reduce((sum, c) => sum + c.newDeathsPerCapita!, 0) / window.length);
+
+            this.checkMax(countyData, "newConfirmedPerCapitaAverage");
+            this.checkMax(countyData, "newDeathsPerCapitaAverage");
+          }
 
           return res;
         }, {} as Metrics<number>);
@@ -193,13 +220,25 @@ class Covid19 {
           d.national.totalDeathsGrowthRate =
             totalDeathsGrowthYesterday === 0 ? 0 : Math.floor((d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday) * 100 * 100) / 100;
         }
+
+        const window = this.getWindow(i).map(d => d.national);
+        d.national.newConfirmedAverage = Math.floor(window.reduce((sum, n) => sum + n.newConfirmed, 0) / window.length);
+        d.national.newDeathsAverage = Math.floor(window.reduce((sum, n) => sum + n.newDeaths, 0) / window.length);
+        d.national.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
+        d.national.totalDeathsGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length);
       });
     });
   }
 
+  getWindow(index: number): DailyData[] {
+    const start = Math.max(0, index - 3);
+    const end   = Math.min(this.covid19!.days.length, index + 4);
+    return this.covid19!.days.slice(start, end);
+  }
+
   generateLegends(): Metrics<Legend> {
     const legends = Object.keys(this.max).reduce((res, k) => {
-      if (k === "totalConfirmedGrowthToday" || k === "totalDeathsGrowthToday") {
+      if (k.indexOf("GrowthToday") > 0) {
         res[k as Metric] = new Legend([
           new LegendItem(0, this.regularShades[0], 0, 0, true),
           new LegendItem(1, this.regularShades[1], 1, 16, true),
@@ -210,7 +249,7 @@ class Covid19 {
           new LegendItem(6, this.regularShades[6], 81, 99, true),
           new LegendItem(7, this.regularShades[7], 100, null, true),
         ]);
-      } else if (k === "totalConfirmedGrowthRate" || k === "totalDeathsGrowthRate") {
+      } else if (k.indexOf("GrowthRate") > 0) {
         res[k as Metric] = new Legend([
           new LegendItem(0, this.growthRateShades[0], 0, 0, true),
           new LegendItem(1, this.growthRateShades[1], 1, 33, true),

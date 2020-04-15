@@ -21,8 +21,9 @@ export type RegularMetric =
   | "totalConfirmedGrowthToday"
   | "totalDeathsGrowthToday";
 export type PerCapitaMetric = "newConfirmedPerCapita" | "totalConfirmedPerCapita" | "newDeathsPerCapita" | "totalDeathsPerCapita";
-export type Metric = RegularMetric | PerCapitaMetric;
-export type Metrics<T> = Partial<Record<PerCapitaMetric, T>> & Record<RegularMetric, T>;
+export type AverageMetric = "newConfirmedAverage" | "newDeathsAverage" | "totalConfirmedGrowthTodayAverage" | "totalDeathsGrowthTodayAverage" | "newConfirmedPerCapitaAverage" | "newDeathsPerCapitaAverage";
+export type Metric = RegularMetric | PerCapitaMetric | AverageMetric;
+export type Metrics<T> = Partial<Record<PerCapitaMetric, T>> & Record<RegularMetric, T> & Partial<Record<AverageMetric, T>>;
 
 export interface Covid19Data {
   counties: Counties;
