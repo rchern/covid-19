@@ -146,33 +146,37 @@ export default class Map {
 <p>Day ${this.currentDayIndex}</p>
 <p></p>
 <p>
-    New Confirmed: ${countyData.newConfirmed}
+    New Confirmed: ${countyData.newConfirmed} (${countyData.newConfirmedAverage} avg)
     <br />
-    ${countyData.newConfirmedPerCapita} per million
+    ${countyData.newConfirmedPerCapita} per million (${countyData.newConfirmedPerCapitaAverage} avg)
 </p>
 <p>
     Total Confirmed: ${countyData.totalConfirmed}
     <br />
     ${countyData.totalConfirmedPerCapita} per million
+</p>
+<p>
+    Confirmed Growth:
+    ${countyData.totalConfirmedGrowthToday}% yesterday (${countyData.totalConfirmedGrowthTodayAverage}% avg)
     <br />
-    ${countyData.totalConfirmedGrowthToday}% growth from yesterday
-    <br />
-    ${countyData.totalConfirmedGrowthRate}% growth change from yesterday
+    ${countyData.totalConfirmedGrowthRate}% change from yesterday
 </p>
 <p></p>
 <p>
-    New Deaths: ${countyData.newDeaths}
+    New Deaths: ${countyData.newDeaths} (${countyData.newDeathsAverage} avg)
     <br />
-    ${countyData.newDeathsPerCapita} per million
+    ${countyData.newDeathsPerCapita} per million (${countyData.newDeathsPerCapitaAverage} avg)
 </p>
 <p>
     Total Deaths: ${countyData.totalDeaths}
     <br />
     ${countyData.totalDeathsPerCapita} per million
+</p>
+<p>
+    Deaths Growth:
+    ${countyData.totalDeathsGrowthToday}% from yesterday (${countyData.totalDeathsGrowthTodayAverage}% avg)
     <br />
-    ${countyData.totalDeathsGrowthToday}% growth from yesterday
-    <br />
-    ${countyData.totalDeathsGrowthRate}% growth change from yesterday
+    ${countyData.totalDeathsGrowthRate}% change from yesterday
 </p>
   `;
 
