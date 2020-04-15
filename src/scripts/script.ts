@@ -186,7 +186,7 @@ class Covid19 {
           const yesterdayDeaths = res.totalDeaths - res.newDeaths;
           res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : Math.floor((res.newDeaths / yesterdayDeaths) * 100 * 100) / 100;
 
-          const window = this.getWindow(i).map(d => d.data[cKey]);
+          const window = this.getWindow(i).map((d) => d.data[cKey]);
           countyData.newConfirmedAverage = Math.floor(window.reduce((sum, c) => sum + c.newConfirmed, 0) / window.length);
           countyData.newDeathsAverage = Math.floor(window.reduce((sum, c) => sum + c.newDeaths, 0) / window.length);
           countyData.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
@@ -221,7 +221,7 @@ class Covid19 {
             totalDeathsGrowthYesterday === 0 ? 0 : Math.floor((d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday) * 100 * 100) / 100;
         }
 
-        const window = this.getWindow(i).map(d => d.national);
+        const window = this.getWindow(i).map((d) => d.national);
         d.national.newConfirmedAverage = Math.floor(window.reduce((sum, n) => sum + n.newConfirmed, 0) / window.length);
         d.national.newDeathsAverage = Math.floor(window.reduce((sum, n) => sum + n.newDeaths, 0) / window.length);
         d.national.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
@@ -232,7 +232,7 @@ class Covid19 {
 
   getWindow(index: number): DailyData[] {
     const start = Math.max(0, index - 3);
-    const end   = Math.min(this.covid19!.days.length, index + 4);
+    const end = Math.min(this.covid19!.days.length, index + 4);
     return this.covid19!.days.slice(start, end);
   }
 
