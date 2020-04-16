@@ -20,6 +20,9 @@ const config = merge(common, {
       {
         from: '**/*.json', to: './[path][name].[ext]', context: "./src/"
       },
+      {
+        from: 'images/*.png', to: './[path][name].[ext]', context: "./src"
+      }
     ]),
   ],
   optimization: {
