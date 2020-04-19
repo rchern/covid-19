@@ -119,9 +119,7 @@ export default class Map {
       $("#nationValue").text("");
       $("#national").hide();
     } else {
-      $("#nationalValue").text(
-        this.formatNumber(national, isGrowth)
-      );
+      $("#nationalValue").text(this.formatNumber(national, isGrowth));
       $("#national").show();
     }
   }
@@ -134,14 +132,10 @@ export default class Map {
     });
   }
 
-  formatNumber(num: number, isPercent: boolean = false) {
+  formatNumber(num: number, isPercent = false) {
     const val = isPercent ? Math.floor(num * 100) / 100 : Math.floor(num);
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
-
-
-
-
 
   showCountyDetails(evt: google.maps.Data.MouseEvent): void {
     const geoId = this.getGeoId(evt.feature);

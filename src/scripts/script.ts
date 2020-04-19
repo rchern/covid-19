@@ -43,7 +43,7 @@ class Covid19 {
       totalDeathsGrowthTodayAverage: 0,
       totalConfirmedGrowthTodayAverage: 0,
 
-      reopenTrajectory: 1
+      reopenTrajectory: 1,
     };
   }
 
@@ -122,14 +122,14 @@ class Covid19 {
           const newConfirmedYesterday = totalConfirmedYesterday - totalConfirmed2Ago;
           const newDeathsYesterday = totalDeathsYesterday - totalDeaths2Ago;
 
-          const confirmedGrowthToday = totalConfirmedYesterday === 0 ? 0 : newConfirmedToday / totalConfirmedYesterday * 100;
-          const deathsGrowthToday = totalDeathsYesterday === 0 ? 0 : newDeathsToday / totalDeathsYesterday * 100;
+          const confirmedGrowthToday = totalConfirmedYesterday === 0 ? 0 : (newConfirmedToday / totalConfirmedYesterday) * 100;
+          const deathsGrowthToday = totalDeathsYesterday === 0 ? 0 : (newDeathsToday / totalDeathsYesterday) * 100;
 
-          const confirmedGrowthYesterday = totalConfirmed2Ago === 0 ? 0 : newConfirmedYesterday / totalConfirmed2Ago * 100;
-          const deathsGrowthYesterday = totalDeaths2Ago === 0 ? 0 : newDeathsYesterday / totalDeaths2Ago * 100;
+          const confirmedGrowthYesterday = totalConfirmed2Ago === 0 ? 0 : (newConfirmedYesterday / totalConfirmed2Ago) * 100;
+          const deathsGrowthYesterday = totalDeaths2Ago === 0 ? 0 : (newDeathsYesterday / totalDeaths2Ago) * 100;
 
-          const confirmedGrowthComparison = confirmedGrowthYesterday === 0 ? 0 : confirmedGrowthToday / confirmedGrowthYesterday * 100;
-          const deathsGrowthComparison = deathsGrowthYesterday === 0 ? 0 : deathsGrowthToday / deathsGrowthYesterday * 100;
+          const confirmedGrowthComparison = confirmedGrowthYesterday === 0 ? 0 : (confirmedGrowthToday / confirmedGrowthYesterday) * 100;
+          const deathsGrowthComparison = deathsGrowthYesterday === 0 ? 0 : (deathsGrowthToday / deathsGrowthYesterday) * 100;
 
           const countyData: Metrics<number> = {
             totalConfirmed: totalConfirmedToday,
@@ -163,8 +163,7 @@ class Covid19 {
             this.checkMax(countyData, "totalDeathsPerCapita");
             this.checkMax(countyData, "newConfirmedPerCapita");
             this.checkMax(countyData, "newDeathsPerCapita");
-          }
-          else {
+          } else {
             console.log(i.county, "no population");
           }
 
@@ -204,14 +203,13 @@ class Covid19 {
           this.checkMax(countyData, "totalConfirmedGrowthTodayAverage");
           this.checkMax(countyData, "totalDeathsGrowthTodayAverage");
 
-
           countyData.reopenTrajectory = 0;
           if (countyData.totalConfirmed > 0 && i >= 13) {
             const slice = this.covid19!.days.slice(Math.max(0, i-14), i).map(c => c.data[cKey].totalConfirmedGrowthTodayAverage);
 
             const slope = (slice[slice.length - 1]! - slice[0]!) / slice.length;
 
-            const sorted = [...slice].sort((a,b) => b! - a!);
+            const sorted = [...slice].sort((a, b) => b! - a!);
 
             const half = Math.floor(slice.length / 2);
 
@@ -242,12 +240,10 @@ class Covid19 {
       this.covid19!.days.forEach((d, i) => {
         if (i > 0) {
           const totalConfirmedGrowthYesterday = this.covid19!.days[i - 1].national.totalConfirmedGrowthToday;
-          d.national.totalConfirmedGrowthRate =
-            totalConfirmedGrowthYesterday === 0 ? 0 : d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday;
+          d.national.totalConfirmedGrowthRate = totalConfirmedGrowthYesterday === 0 ? 0 : d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday;
 
           const totalDeathsGrowthYesterday = this.covid19!.days[i - 1].national.totalDeathsGrowthToday;
-          d.national.totalDeathsGrowthRate =
-            totalDeathsGrowthYesterday === 0 ? 0 : d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday;
+          d.national.totalDeathsGrowthRate = totalDeathsGrowthYesterday === 0 ? 0 : d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday;
         }
 
         const window = this.getWindow(i).map((d) => d.national);
@@ -294,7 +290,7 @@ class Covid19 {
         res[k as Metric] = new Legend([
           new LegendItem(0, this.yesNoShades[0], -1, -1, true, "Not Ready to Re-Open"),
           new LegendItem(1, this.yesNoShades[1], 0, 0, true, "Not Enough Data"),
-          new LegendItem(2, this.yesNoShades[2], 1, 1, true, "Ready To Re-Open")
+          new LegendItem(2, this.yesNoShades[2], 1, 1, true, "Ready To Re-Open"),
         ]);
       } else {
         const slider = new LogarithmicSlider(this.regularShades.length, this.max[k as Metric]!);

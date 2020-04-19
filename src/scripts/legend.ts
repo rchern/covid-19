@@ -1,5 +1,12 @@
 export class LegendItem {
-  constructor(private position: number, private color: string, private min: number | null, private max: number | null, private on: boolean, private text?: string) {}
+  constructor(
+    private position: number,
+    private color: string,
+    private min: number | null,
+    private max: number | null,
+    private on: boolean,
+    private text?: string
+  ) {}
 
   toggle(): void {
     this.on = !this.on;
