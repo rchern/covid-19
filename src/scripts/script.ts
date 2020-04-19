@@ -10,7 +10,8 @@ class Covid19 {
   private population: Population = {};
   private max: Metrics<number>;
 
-  private regularShades: string[] = ["FFFFFF", "F2F0F7", "DADAEB", "BCBDDC", "9E9AC8", "807DBA", "6A51A3", "4A1486"];
+  //private regularShades: string[] = ["FFFFFF", "F2F0F7", "DADAEB", "BCBDDC", "9E9AC8", "807DBA", "6A51A3", "4A1486"];
+  private regularShades: string[] = ["FFFFFF", "EDF8FB", "BFD3E6", "9EBCDA", "8C96C6", "8C6BB1", "88419D", "6E016B"];
   private growthRateShades: string[] = ["FFFFFF", "31A354", "A1D99B", "E5F5E0", "FFF7BC", "FEE0D2", "FC9272", "DE2D26", "333333"];
   private yesNoShades: string[] = ["DE2D26", "FFFFFF", "31A354"];
 
