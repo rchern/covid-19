@@ -205,7 +205,7 @@ class Covid19 {
 
           countyData.reopenTrajectory = 0;
           if (countyData.totalConfirmed > 0 && i >= 13) {
-            const slice = this.covid19!.days.slice(Math.max(0, i-14), i).map(c => c.data[cKey].totalConfirmedGrowthTodayAverage);
+            const slice = this.covid19!.days.slice(Math.max(0, i - 14), i).map((c) => c.data[cKey].newConfirmedAverage);
 
             const slope = (slice[slice.length - 1]! - slice[0]!) / slice.length;
 
