@@ -119,7 +119,7 @@ export default class Map {
       $("#nationValue").text("");
       $("#national").hide();
     } else {
-      $("#nationalValue").text(this.formatNumber(national, isGrowth));
+      $("#nationalValue").text(this.formatNumber(national, isGrowth) + (isGrowth ? "%" : ""));
       $("#national").show();
     }
   }

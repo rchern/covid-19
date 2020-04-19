@@ -187,10 +187,10 @@ class Covid19 {
           res.newDeaths = (res.newDeaths || 0) + countyData.newDeaths;
 
           const yesterdayConfirmed = res.totalConfirmed - res.newConfirmed;
-          res.totalConfirmedGrowthToday = yesterdayConfirmed === 0 ? 0 : res.newConfirmed / yesterdayConfirmed;
+          res.totalConfirmedGrowthToday = yesterdayConfirmed === 0 ? 0 : res.newConfirmed / yesterdayConfirmed * 100;
 
           const yesterdayDeaths = res.totalDeaths - res.newDeaths;
-          res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : res.newDeaths / yesterdayDeaths;
+          res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : res.newDeaths / yesterdayDeaths * 100;
 
           const window = this.getWindow(i).map((d) => d.data[cKey]);
           countyData.newConfirmedAverage = window.reduce((sum, c) => sum + c.newConfirmed, 0) / window.length;
@@ -240,10 +240,10 @@ class Covid19 {
       this.covid19!.days.forEach((d, i) => {
         if (i > 0) {
           const totalConfirmedGrowthYesterday = this.covid19!.days[i - 1].national.totalConfirmedGrowthToday;
-          d.national.totalConfirmedGrowthRate = totalConfirmedGrowthYesterday === 0 ? 0 : d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday;
+          d.national.totalConfirmedGrowthRate = totalConfirmedGrowthYesterday === 0 ? 0 : d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday * 100;
 
           const totalDeathsGrowthYesterday = this.covid19!.days[i - 1].national.totalDeathsGrowthToday;
-          d.national.totalDeathsGrowthRate = totalDeathsGrowthYesterday === 0 ? 0 : d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday;
+          d.national.totalDeathsGrowthRate = totalDeathsGrowthYesterday === 0 ? 0 : d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday * 100;
         }
 
         const window = this.getWindow(i).map((d) => d.national);
