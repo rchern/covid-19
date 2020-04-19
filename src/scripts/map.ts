@@ -120,7 +120,7 @@ export default class Map {
       $("#national").hide();
     } else {
       $("#nationalValue").text(
-        (isGrowth ? national : national.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")) + (this.metric.indexOf("Growth") >= 0 ? "%" : "")
+        this.formatNumber(national, isGrowth)
       );
       $("#national").show();
     }
@@ -134,6 +134,15 @@ export default class Map {
     });
   }
 
+  formatNumber(num: number, isPercent: boolean = false) {
+    const val = isPercent ? Math.floor(num * 100) / 100 : Math.floor(num);
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+
+
+
+
   showCountyDetails(evt: google.maps.Data.MouseEvent): void {
     const geoId = this.getGeoId(evt.feature);
 
@@ -141,42 +150,44 @@ export default class Map {
     const county = this.data.counties[geoId];
 
     const html = `
-<div><b>${county.county}, ${county.stateAbbr}</b></div>
-<div>Population:  ${county.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
+<div data-fips="${geoId}"><b>${county.county}, ${county.stateAbbr}</b></div>
+<div>Population:  ${this.formatNumber(county.population)}</div>
 <p>Day ${this.currentDayIndex}</p>
 <p></p>
 <p>
-    New Confirmed: ${countyData.newConfirmed} (${countyData.newConfirmedAverage} avg)
+    14-day Downward Case Trajectory for Reopen: ${countyData.reopenTrajectory == -1 ? "no" : countyData.reopenTrajectory == 1 ? "yes" : "not enough data"}
+<p>
+    New Confirmed: ${this.formatNumber(countyData.newConfirmed)} (${this.formatNumber(countyData.newConfirmedAverage!)} avg)
     <br />
-    ${countyData.newConfirmedPerCapita} per million (${countyData.newConfirmedPerCapitaAverage} avg)
+    ${this.formatNumber(countyData.newConfirmedPerCapita!)} per million (${this.formatNumber(countyData.newConfirmedPerCapitaAverage!)} avg)
 </p>
 <p>
-    Total Confirmed: ${countyData.totalConfirmed}
+    Total Confirmed: ${this.formatNumber(countyData.totalConfirmed)}
     <br />
-    ${countyData.totalConfirmedPerCapita} per million
+    ${this.formatNumber(countyData.totalConfirmedPerCapita!)} per million
 </p>
 <p>
     Confirmed Growth:
-    ${countyData.totalConfirmedGrowthToday}% yesterday (${countyData.totalConfirmedGrowthTodayAverage}% avg)
+    ${this.formatNumber(countyData.totalConfirmedGrowthToday, true)}% yesterday (${this.formatNumber(countyData.totalConfirmedGrowthTodayAverage!, true)}% avg)
     <br />
-    ${countyData.totalConfirmedGrowthRate}% change from yesterday
+    ${this.formatNumber(countyData.totalConfirmedGrowthRate, true)}% change from yesterday
 </p>
 <p></p>
 <p>
-    New Deaths: ${countyData.newDeaths} (${countyData.newDeathsAverage} avg)
+    New Deaths: ${this.formatNumber(countyData.newDeaths)} (${this.formatNumber(countyData.newDeathsAverage!)} avg)
     <br />
-    ${countyData.newDeathsPerCapita} per million (${countyData.newDeathsPerCapitaAverage} avg)
+    ${this.formatNumber(countyData.newDeathsPerCapita!)} per million (${this.formatNumber(countyData.newDeathsPerCapitaAverage!)} avg)
 </p>
 <p>
-    Total Deaths: ${countyData.totalDeaths}
+    Total Deaths: ${this.formatNumber(countyData.totalDeaths)}
     <br />
-    ${countyData.totalDeathsPerCapita} per million
+    ${this.formatNumber(countyData.totalDeathsPerCapita!)} per million
 </p>
 <p>
     Deaths Growth:
-    ${countyData.totalDeathsGrowthToday}% from yesterday (${countyData.totalDeathsGrowthTodayAverage}% avg)
+    ${this.formatNumber(countyData.totalDeathsGrowthToday!, true)}% from yesterday (${this.formatNumber(countyData.totalDeathsGrowthTodayAverage!, true)}% avg)
     <br />
-    ${countyData.totalDeathsGrowthRate}% change from yesterday
+    ${this.formatNumber(countyData.totalDeathsGrowthRate, true)}% change from yesterday
 </p>
   `;
 
@@ -218,8 +229,12 @@ export default class Map {
     let bucket = "white";
     if (countyData != null) {
       const value = countyData[this.metric] || 0;
-      const shade = this.legends[this.metric]!.getPosition(value);
+      const formattedValue = this.formatNumber(value, this.metric.indexOf("Growth") >= 0);
+      const shade = this.legends[this.metric]!.getPosition(formattedValue);
 
+      if (shade == null) {
+        console.log(geoId, countyData, county, value, formattedValue, shade);
+      }
       if (shade.isOn()) {
         if (
           (this.minPopulation == null || this.minPopulation <= county.population) &&

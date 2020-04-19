@@ -11,7 +11,7 @@ const config = merge(common, {
   },
   devServer: {
     open: true,
-    contentBase: path.resolve(__dirname, "../src"),
+    contentBase: path.resolve(__dirname, "../src")
   },
   plugins: [
     new MiniCssExtractPlugin({

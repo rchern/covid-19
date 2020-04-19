@@ -27,7 +27,8 @@ export type AverageMetric =
   | "totalConfirmedGrowthTodayAverage"
   | "totalDeathsGrowthTodayAverage"
   | "newConfirmedPerCapitaAverage"
-  | "newDeathsPerCapitaAverage";
+  | "newDeathsPerCapitaAverage"
+  | "reopenTrajectory";
 export type Metric = RegularMetric | PerCapitaMetric | AverageMetric;
 export type Metrics<T> = Partial<Record<PerCapitaMetric, T>> & Record<RegularMetric, T> & Partial<Record<AverageMetric, T>>;
 

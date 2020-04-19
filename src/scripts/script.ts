@@ -12,6 +12,8 @@ class Covid19 {
 
   private regularShades: string[] = ["FFFFFF", "F2F0F7", "DADAEB", "BCBDDC", "9E9AC8", "807DBA", "6A51A3", "4A1486"];
   private growthRateShades: string[] = ["FFFFFF", "31A354", "A1D99B", "E5F5E0", "FFF7BC", "FEE0D2", "FC9272", "DE2D26", "333333"];
+  private yesNoShades: string[] = ["DE2D26", "FFFFFF", "31A354"];
+
   //private growthShades: string[] = [ "31A354", "A1D99B", "E5F5E0", "white", "FEE0D2", "FC9272", "DE2D26"];
 
   private map?: Map;
@@ -40,6 +42,8 @@ class Covid19 {
       newConfirmedPerCapitaAverage: 0,
       totalDeathsGrowthTodayAverage: 0,
       totalConfirmedGrowthTodayAverage: 0,
+
+      reopenTrajectory: 1
     };
   }
 
@@ -118,14 +122,14 @@ class Covid19 {
           const newConfirmedYesterday = totalConfirmedYesterday - totalConfirmed2Ago;
           const newDeathsYesterday = totalDeathsYesterday - totalDeaths2Ago;
 
-          const confirmedGrowthToday = totalConfirmedYesterday === 0 ? 0 : Math.floor((newConfirmedToday / totalConfirmedYesterday) * 100);
-          const deathsGrowthToday = totalDeathsYesterday === 0 ? 0 : Math.floor((newDeathsToday / totalDeathsYesterday) * 100);
+          const confirmedGrowthToday = totalConfirmedYesterday === 0 ? 0 : newConfirmedToday / totalConfirmedYesterday * 100;
+          const deathsGrowthToday = totalDeathsYesterday === 0 ? 0 : newDeathsToday / totalDeathsYesterday * 100;
 
-          const confirmedGrowthYesterday = totalConfirmed2Ago === 0 ? 0 : Math.floor((newConfirmedYesterday / totalConfirmed2Ago) * 100);
-          const deathsGrowthYesterday = totalDeaths2Ago === 0 ? 0 : Math.floor((newDeathsYesterday / totalDeaths2Ago) * 100);
+          const confirmedGrowthYesterday = totalConfirmed2Ago === 0 ? 0 : newConfirmedYesterday / totalConfirmed2Ago * 100;
+          const deathsGrowthYesterday = totalDeaths2Ago === 0 ? 0 : newDeathsYesterday / totalDeaths2Ago * 100;
 
-          const confirmedGrowthComparison = confirmedGrowthYesterday === 0 ? 0 : Math.floor((confirmedGrowthToday / confirmedGrowthYesterday) * 100);
-          const deathsGrowthComparison = deathsGrowthYesterday === 0 ? 0 : Math.floor((deathsGrowthToday / deathsGrowthYesterday) * 100);
+          const confirmedGrowthComparison = confirmedGrowthYesterday === 0 ? 0 : confirmedGrowthToday / confirmedGrowthYesterday * 100;
+          const deathsGrowthComparison = deathsGrowthYesterday === 0 ? 0 : deathsGrowthToday / deathsGrowthYesterday * 100;
 
           const countyData: Metrics<number> = {
             totalConfirmed: totalConfirmedToday,
@@ -134,11 +138,11 @@ class Covid19 {
             newConfirmed: newConfirmedToday,
             newDeaths: newDeathsToday,
 
-            totalConfirmedGrowthToday: Math.floor(confirmedGrowthToday * 100) / 100,
-            totalDeathsGrowthToday: Math.floor(deathsGrowthToday * 100) / 100,
+            totalConfirmedGrowthToday: confirmedGrowthToday,
+            totalDeathsGrowthToday: deathsGrowthToday,
 
-            totalConfirmedGrowthRate: Math.floor(confirmedGrowthComparison * 100) / 100,
-            totalDeathsGrowthRate: Math.floor(deathsGrowthComparison * 100) / 100,
+            totalConfirmedGrowthRate: confirmedGrowthComparison,
+            totalDeathsGrowthRate: deathsGrowthComparison,
           };
 
           this.checkMax(countyData, "totalConfirmed");
@@ -149,16 +153,19 @@ class Covid19 {
           if (countySummary.population !== null) {
             const denominator = countySummary.population / 1000000;
 
-            countyData.totalConfirmedPerCapita = Math.floor(countyData.totalConfirmed / denominator);
-            countyData.totalDeathsPerCapita = Math.floor(countyData.totalDeaths / denominator);
+            countyData.totalConfirmedPerCapita = countyData.totalConfirmed / denominator;
+            countyData.totalDeathsPerCapita = countyData.totalDeaths / denominator;
 
-            countyData.newConfirmedPerCapita = Math.floor(countyData.newConfirmed / denominator);
-            countyData.newDeathsPerCapita = Math.floor(countyData.newDeaths / denominator);
+            countyData.newConfirmedPerCapita = countyData.newConfirmed / denominator;
+            countyData.newDeathsPerCapita = countyData.newDeaths / denominator;
 
             this.checkMax(countyData, "totalConfirmedPerCapita");
             this.checkMax(countyData, "totalDeathsPerCapita");
             this.checkMax(countyData, "newConfirmedPerCapita");
             this.checkMax(countyData, "newDeathsPerCapita");
+          }
+          else {
+            console.log(i.county, "no population");
           }
 
           if (this.covid19!.days[d] == null) {
@@ -181,26 +188,48 @@ class Covid19 {
           res.newDeaths = (res.newDeaths || 0) + countyData.newDeaths;
 
           const yesterdayConfirmed = res.totalConfirmed - res.newConfirmed;
-          res.totalConfirmedGrowthToday = yesterdayConfirmed === 0 ? 0 : Math.floor((res.newConfirmed / yesterdayConfirmed) * 100 * 100) / 100;
+          res.totalConfirmedGrowthToday = yesterdayConfirmed === 0 ? 0 : res.newConfirmed / yesterdayConfirmed;
 
           const yesterdayDeaths = res.totalDeaths - res.newDeaths;
-          res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : Math.floor((res.newDeaths / yesterdayDeaths) * 100 * 100) / 100;
+          res.totalDeathsGrowthToday = yesterdayDeaths === 0 ? 0 : res.newDeaths / yesterdayDeaths;
 
           const window = this.getWindow(i).map((d) => d.data[cKey]);
-          countyData.newConfirmedAverage = Math.floor(window.reduce((sum, c) => sum + c.newConfirmed, 0) / window.length);
-          countyData.newDeathsAverage = Math.floor(window.reduce((sum, c) => sum + c.newDeaths, 0) / window.length);
-          countyData.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
-          countyData.totalDeathsGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length);
+          countyData.newConfirmedAverage = window.reduce((sum, c) => sum + c.newConfirmed, 0) / window.length;
+          countyData.newDeathsAverage = window.reduce((sum, c) => sum + c.newDeaths, 0) / window.length;
+          countyData.totalConfirmedGrowthTodayAverage = window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length;
+          countyData.totalDeathsGrowthTodayAverage = window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length;
 
           this.checkMax(countyData, "newConfirmedAverage");
           this.checkMax(countyData, "newDeathsAverage");
           this.checkMax(countyData, "totalConfirmedGrowthTodayAverage");
           this.checkMax(countyData, "totalDeathsGrowthTodayAverage");
 
+
+          countyData.reopenTrajectory = 0;
+          if (countyData.totalConfirmed > 0 && i >= 13) {
+            const slice = this.covid19!.days.slice(Math.max(0, i-14), i).map(c => c.data[cKey].totalConfirmedGrowthTodayAverage);
+
+            const slope = (slice[slice.length - 1]! - slice[0]!) / slice.length;
+
+            const sorted = [...slice].sort((a,b) => b! - a!);
+
+            const half = Math.floor(slice.length / 2);
+
+            const median = (sorted[half - 1]! + sorted[half]!) / 2.0;
+
+            const medianGood = slice[0]! > median && slice[slice.length - 1]! < median;
+
+            const allZero = slice.every((v) => v == 0);
+
+            countyData.reopenTrajectory = slope < 0 && (allZero || medianGood) ? 1 : -1;
+
+            //countyData.reopenTrajectory = slope < 0 ? 1 : (slope > 0 ? -1 : 0);
+          }
+
           const countySummary = this.covid19!.counties[cKey];
           if (countySummary.population !== null) {
-            countyData.newConfirmedPerCapitaAverage = Math.floor(window.reduce((sum, c) => sum + c.newConfirmedPerCapita!, 0) / window.length);
-            countyData.newDeathsPerCapitaAverage = Math.floor(window.reduce((sum, c) => sum + c.newDeathsPerCapita!, 0) / window.length);
+            countyData.newConfirmedPerCapitaAverage = window.reduce((sum, c) => sum + c.newConfirmedPerCapita!, 0) / window.length;
+            countyData.newDeathsPerCapitaAverage = window.reduce((sum, c) => sum + c.newDeathsPerCapita!, 0) / window.length;
 
             this.checkMax(countyData, "newConfirmedPerCapitaAverage");
             this.checkMax(countyData, "newDeathsPerCapitaAverage");
@@ -214,18 +243,18 @@ class Covid19 {
         if (i > 0) {
           const totalConfirmedGrowthYesterday = this.covid19!.days[i - 1].national.totalConfirmedGrowthToday;
           d.national.totalConfirmedGrowthRate =
-            totalConfirmedGrowthYesterday === 0 ? 0 : Math.floor((d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday) * 100 * 100) / 100;
+            totalConfirmedGrowthYesterday === 0 ? 0 : d.national.totalConfirmedGrowthToday / totalConfirmedGrowthYesterday;
 
           const totalDeathsGrowthYesterday = this.covid19!.days[i - 1].national.totalDeathsGrowthToday;
           d.national.totalDeathsGrowthRate =
-            totalDeathsGrowthYesterday === 0 ? 0 : Math.floor((d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday) * 100 * 100) / 100;
+            totalDeathsGrowthYesterday === 0 ? 0 : d.national.totalDeathsGrowthToday / totalDeathsGrowthYesterday;
         }
 
         const window = this.getWindow(i).map((d) => d.national);
-        d.national.newConfirmedAverage = Math.floor(window.reduce((sum, n) => sum + n.newConfirmed, 0) / window.length);
-        d.national.newDeathsAverage = Math.floor(window.reduce((sum, n) => sum + n.newDeaths, 0) / window.length);
-        d.national.totalConfirmedGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length);
-        d.national.totalDeathsGrowthTodayAverage = Math.floor(window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length);
+        d.national.newConfirmedAverage = window.reduce((sum, n) => sum + n.newConfirmed, 0) / window.length;
+        d.national.newDeathsAverage = window.reduce((sum, n) => sum + n.newDeaths, 0) / window.length;
+        d.national.totalConfirmedGrowthTodayAverage = window.reduce((sum, c) => sum + c.totalConfirmedGrowthToday, 0) / window.length;
+        d.national.totalDeathsGrowthTodayAverage = window.reduce((sum, c) => sum + c.totalDeathsGrowthToday, 0) / window.length;
       });
     });
   }
@@ -260,6 +289,12 @@ class Covid19 {
           new LegendItem(6, this.growthRateShades[6], 134, 166, true),
           new LegendItem(7, this.growthRateShades[7], 167, 199, true),
           new LegendItem(7, this.growthRateShades[8], 200, null, true),
+        ]);
+      } else if (k === "reopenTrajectory") {
+        res[k as Metric] = new Legend([
+          new LegendItem(0, this.yesNoShades[0], -1, -1, true, "Not Ready to Re-Open"),
+          new LegendItem(1, this.yesNoShades[1], 0, 0, true, "Not Enough Data"),
+          new LegendItem(2, this.yesNoShades[2], 1, 1, true, "Ready To Re-Open")
         ]);
       } else {
         const slider = new LogarithmicSlider(this.regularShades.length, this.max[k as Metric]!);

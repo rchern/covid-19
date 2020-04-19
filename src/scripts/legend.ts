@@ -1,5 +1,5 @@
 export class LegendItem {
-  constructor(private position: number, private color: string, private min: number | null, private max: number | null, private on: boolean) {}
+  constructor(private position: number, private color: string, private min: number | null, private max: number | null, private on: boolean, private text?: string) {}
 
   toggle(): void {
     this.on = !this.on;
@@ -10,15 +10,19 @@ export class LegendItem {
   }
 
   generateLegend(): string {
-    let text = `${this.min} to ${this.max}`;
-    if (this.min === this.max) {
-      text = `${this.min}`;
-    } else if (this.min === null) {
-      text = `<= ${this.max}`;
-    } else if (this.max === null) {
-      text = `>= ${this.min}`;
+    let text = "";
+    if (this.text != null) {
+      text = this.text;
+    } else {
+      text = `${this.min} to ${this.max}`;
+      if (this.min === this.max) {
+        text = `${this.min}`;
+      } else if (this.min === null) {
+        text = `<= ${this.max}`;
+      } else if (this.max === null) {
+        text = `>= ${this.min}`;
+      }
     }
-
     return `
 <div class='col-6 col-sm-3'>
   <div data-position="${this.position}" class="legend-value ${this.on ? "on" : ""}" style="background-color: #${this.color}">
@@ -61,7 +65,7 @@ export class Legend {
     return this.items[position].isOn();
   }
 
-  getPosition(value: number): LegendItem {
-    return this.items.find((i) => i.isInRange(value))!;
+  getPosition(value: string): LegendItem {
+    return this.items.find((i) => i.isInRange(Math.floor(Number(value.toString().replace(",", "")))))!;
   }
 }
