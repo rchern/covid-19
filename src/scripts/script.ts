@@ -76,7 +76,7 @@ class Covid19 {
   }
 
   fetchCovid19Data(): JQuery.jqXHR<USAFactsCounty[]> {
-    return $.getJSON("https://usafactsstatic.blob.core.windows.net/public/2020/coronavirus-timeline/allData.json").done((data: USAFactsCounty[]) => {
+    return $.getJSON("https://script.google.com/macros/s/AKfycby9NQ59C_tP1oLlYRnUeY8g-5HfSFwJsE77OksJDO5kfUB0yL4/exec").done((data: USAFactsCounty[]) => {
       const days = data[0].confirmed.length;
 
       this.covid19 = { counties: {}, days: [] };
