@@ -132,7 +132,7 @@ export default class Map {
     });
   }
 
-  formatNumber(num: number, isPercent = false) {
+  formatNumber(num: number, isPercent = false): string {
     const val = isPercent ? Math.floor(num * 100) / 100 : Math.floor(num);
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
