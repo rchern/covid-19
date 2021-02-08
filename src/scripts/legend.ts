@@ -73,6 +73,6 @@ export class Legend {
   }
 
   getPosition(value: string): LegendItem {
-    return this.items.find((i) => i.isInRange(Math.floor(Number(value.toString().replace(",", "")))))!;
+    return this.items.find((i) => i.isInRange(Math.floor(Number(value.toString().replace(/,/g, "")))))!;
   }
 }
